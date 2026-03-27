@@ -4,11 +4,11 @@ type Variant = "primary" | "secondary" | "ghost";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-scribix-primary text-scribix-primary-fg shadow-sm hover:bg-scribix-primary/92 hover:-translate-y-px hover:shadow active:translate-y-0",
+    "border border-scribix-border-strong bg-scribix-primary text-scribix-primary-fg shadow-sm hover:bg-scribix-primary/92 hover:-translate-y-px hover:shadow-md active:translate-y-0",
   secondary:
-    "border border-scribix-text/15 bg-transparent text-scribix-text hover:bg-scribix-text/[0.03] hover:-translate-y-px active:translate-y-0",
+    "border border-scribix-border-strong bg-scribix-panel text-scribix-text shadow-sm hover:bg-scribix-border-subtle hover:-translate-y-px hover:border-scribix-border-strong active:translate-y-0",
   ghost:
-    "text-scribix-text/80 hover:bg-scribix-text/[0.04] active:translate-y-px",
+    "text-scribix-text/80 hover:bg-scribix-border-subtle active:translate-y-px",
 };
 
 export function Button({
