@@ -1,6 +1,5 @@
 import { apiRequest } from '@/lib/api-client'
 import type {
-  AuthCredentialsResponse,
   EditableProfileResponse,
   MeResponse,
   PostEditorPayload,
@@ -12,30 +11,6 @@ import type {
   PublicPostDetailResponse,
   UsernameAvailability,
 } from '@/lib/types'
-
-export async function login(body: { email: string; password: string }) {
-  return apiRequest<AuthCredentialsResponse>('/auth/login', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    skipAuth: true,
-  })
-}
-
-export async function signup(body: { email: string; password: string }) {
-  return apiRequest<AuthCredentialsResponse>('/auth/signup', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    skipAuth: true,
-  })
-}
-
-export async function googleAuth(idToken: string) {
-  return apiRequest<AuthCredentialsResponse>('/auth/google', {
-    method: 'POST',
-    body: JSON.stringify({ id_token: idToken }),
-    skipAuth: true,
-  })
-}
 
 export async function fetchMe() {
   return apiRequest<MeResponse>('/auth/me')
