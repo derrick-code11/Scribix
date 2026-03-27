@@ -2,7 +2,7 @@ import { prisma } from "../config/prisma.js";
 import { AppError } from "../lib/api-error.js";
 import {
   encodeCursor,
-  decodeCursor,
+  postCursorWhere,
   clampLimit,
   type CursorPage,
 } from "../lib/pagination.js";
@@ -29,8 +29,6 @@ export async function getPublicPostFeed(
 
   const limit = clampLimit(query.limit, 30, 10);
   const order: "asc" | "desc" = query.order === "asc" ? "asc" : "desc";
-  const sortField = "publishedAt";
-
   const where: Prisma.PostWhereInput = {
     authorUserId: profile.userId,
     status: "published",
@@ -40,27 +38,12 @@ export async function getPublicPostFeed(
     }),
   };
 
-  let cursorFilter: Prisma.PostWhereInput = {};
-  if (query.cursor) {
-    const decoded = decodeCursor(query.cursor);
-    if (decoded) {
-      const op = order === "desc" ? "lt" : "gt";
-      cursorFilter = {
-        OR: [
-          { [sortField]: { [op]: new Date(decoded.sortValue) } },
-          {
-            [sortField]: new Date(decoded.sortValue),
-            id: { [op]: decoded.id },
-          },
-        ],
-      };
-    }
-  }
+  const cursorFilter = postCursorWhere("publishedAt", order, query.cursor);
 
   const take = limit + 1;
   const posts = await prisma.post.findMany({
     where: { ...where, ...cursorFilter },
-    orderBy: [{ [sortField]: order }, { id: order }],
+    orderBy: [{ publishedAt: order }, { id: order }],
     take,
     select: {
       id: true,
