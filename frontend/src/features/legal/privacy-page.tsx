@@ -28,9 +28,10 @@ export function PrivacyPage() {
           2. Information we collect
         </h2>
         <p>
-          <strong className="text-scribix-text">Account data:</strong> this
-          preview does not offer sign-in or accounts. If we add accounts later,
-          we will describe what we collect at that time.
+          <strong className="text-scribix-text">Account data:</strong> when you
+          create an account, we process information needed to run the service,
+          such as identifiers from your sign-in provider (for example, Google),
+          email address, and the profile details and username you provide.
         </p>
         <p>
           <strong className="text-scribix-text">Public content:</strong> when you
@@ -90,8 +91,8 @@ export function PrivacyPage() {
           7. Your choices
         </h2>
         <p>
-          You can clear site data in your browser. If we add accounts later, we
-          will describe how to access or delete related data.
+          You can clear site data in your browser. For account-related data, use
+          in-app settings or contact us through the options on the site.
         </p>
       </section>
 
