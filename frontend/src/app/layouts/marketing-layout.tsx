@@ -1,34 +1,30 @@
 import { Link, Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function MarketingLayout() {
   return (
     <div className="min-h-dvh bg-grain bg-scribix-bg">
-      <header className="sticky top-0 z-50 px-4 pt-4 pb-2 sm:px-6">
+      <header className="sticky top-0 z-50 px-3 pt-4 pb-2 sm:px-5">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto flex max-w-5xl items-center justify-between gap-4 rounded-full border border-scribix-text/8 bg-scribix-panel/95 px-4 py-3 shadow-sm backdrop-blur-md sm:px-6"
+          className="mx-auto flex max-w-5xl items-center justify-between gap-4 rounded-full border border-scribix-border bg-scribix-panel/95 px-4 py-3 shadow-sm backdrop-blur-md transition-shadow hover:shadow-md sm:px-6"
         >
-          <Link
-            to="/"
-            className="font-display text-lg tracking-tight text-scribix-text"
-          >
-            Scribix
-          </Link>
+          <BrandLogo to="/" size="md" />
           <nav className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
             <Link
               to="/login"
-              className="font-mono text-xs uppercase tracking-wider text-scribix-text/70 transition-colors hover:text-scribix-text"
+              className="font-mono text-xs uppercase tracking-wider text-scribix-text-muted transition-colors hover:text-scribix-text"
             >
               Log in
             </Link>
             <Link
               to="/signup"
-              className="rounded-sm bg-scribix-primary px-4 py-2 font-mono text-xs font-medium uppercase tracking-wider text-scribix-primary-fg shadow-sm transition-[opacity,transform] duration-200 hover:bg-scribix-primary/92 active:scale-[0.98]"
+              className="rounded-sm border border-scribix-border-strong bg-scribix-primary px-4 py-2 font-mono text-xs font-medium uppercase tracking-wider text-scribix-primary-fg shadow-sm transition-[opacity,transform,box-shadow] duration-200 hover:bg-scribix-primary/92 hover:shadow active:scale-[0.98]"
             >
               Start writing
             </Link>
@@ -38,7 +34,7 @@ export function MarketingLayout() {
       <main>
         <Outlet />
       </main>
-      <footer className="mt-auto border-t border-scribix-text/8 bg-scribix-surface-muted">
+      <footer className="mt-auto border-t border-scribix-border bg-scribix-surface-muted">
         <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:grid-cols-3 sm:px-6">
           <div>
             <p className="font-display text-lg text-scribix-text">Scribix</p>

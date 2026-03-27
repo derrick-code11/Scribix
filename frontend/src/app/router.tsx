@@ -10,17 +10,27 @@ import { SignupPage } from "@/features/auth/signup-page";
 import { AuthCallbackPage } from "@/features/auth/auth-callback";
 import { OnboardingPage } from "@/features/onboarding/onboarding-page";
 import { DashboardPage } from "@/features/dashboard/dashboard-page";
+import { EditorPage } from "@/features/editor/editor-page";
+import { SettingsPage } from "@/features/settings/settings-page";
 import { PublicProfilePage } from "@/features/public-profile/public-profile-page";
 import { PublicPostPage } from "@/features/public-post/public-post-page";
 import { TermsPage } from "@/features/legal/terms-page";
 import { PrivacyPage } from "@/features/legal/privacy-page";
+import { AuthedRedirect } from "@/app/guards/authed-redirect";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MarketingLayout />,
     children: [
-      { index: true, element: <LandingPage /> },
+      {
+        index: true,
+        element: (
+          <AuthedRedirect>
+            <LandingPage />
+          </AuthedRedirect>
+        ),
+      },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "terms", element: <TermsPage /> },
@@ -42,6 +52,8 @@ export const router = createBrowserRouter([
             element: <OnboardingGuard />,
             children: [
               { path: "/dashboard", element: <DashboardPage /> },
+              { path: "/editor/:postId", element: <EditorPage /> },
+              { path: "/settings", element: <SettingsPage /> },
             ],
           },
         ],
