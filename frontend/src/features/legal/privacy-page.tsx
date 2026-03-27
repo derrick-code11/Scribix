@@ -28,12 +28,15 @@ export function PrivacyPage() {
           2. Information we collect
         </h2>
         <p>
-          <strong className="text-scribix-text">Account data:</strong> sign-in is
-          with Google only. We receive identifiers and profile information from
-          Google (such as email and name) according to your Google account
-          settings and our authentication provider. We also store your chosen
-          username, optional profile bio and links, and content you save in
-          drafts and published posts.
+          <strong className="text-scribix-text">Account data:</strong> this
+          preview does not offer sign-in or accounts. If we add accounts later,
+          we will describe what we collect at that time.
+        </p>
+        <p>
+          <strong className="text-scribix-text">Public content:</strong> when you
+          visit public profile or post pages, we may process the URLs you
+          request and any content shown on those pages as part of delivering the
+          site.
         </p>
         <p>
           <strong className="text-scribix-text">Technical data:</strong>{" "}
@@ -47,10 +50,8 @@ export function PrivacyPage() {
           3. How we use information
         </h2>
         <p>
-          We use account and content data to provide accounts, authenticate you,
-          store your writing, and show published posts and profiles to
-          visitors. We use technical data to operate, secure, and improve the
-          service.
+          We use technical data to operate, secure, and improve the service and
+          to show public pages you request.
         </p>
       </section>
 
@@ -59,9 +60,9 @@ export function PrivacyPage() {
           4. Cookies and local storage
         </h2>
         <p>
-          We use cookies or similar storage so you can stay logged in. Session
-          data is sent over HTTPS. You can clear site data in your browser to
-          log out; logging out from the app clears the session on that device.
+          We may use cookies or local storage for preferences (such as theme) or
+          similar features. You can clear site data in your browser at any
+          time.
         </p>
       </section>
 
@@ -72,19 +73,15 @@ export function PrivacyPage() {
         <p>
           We do not sell your personal information. We may use hosting,
           database, and infrastructure providers to run the service; they
-          process data only as needed to provide those services. If you use
-          Google sign-in, Google processes authentication according to their
-          terms and privacy policy.
+          process data only as needed to provide those services.
         </p>
       </section>
 
       <section className="space-y-3">
         <h2 className="font-display text-lg text-scribix-text">6. Retention</h2>
         <p>
-          We keep your information while your account exists and as needed to
-          comply with law or resolve disputes. If you delete your account, we
-          delete or anonymize your data when reasonably possible, subject to
-          backups and legal holds.
+          We retain information only as long as needed for the purposes
+          described here and as required by law.
         </p>
       </section>
 
@@ -93,9 +90,8 @@ export function PrivacyPage() {
           7. Your choices
         </h2>
         <p>
-          You can update profile information in settings where available. You
-          may request account deletion by contacting us if the product does
-          not offer a self-service delete option yet.
+          You can clear site data in your browser. If we add accounts later, we
+          will describe how to access or delete related data.
         </p>
       </section>
 
