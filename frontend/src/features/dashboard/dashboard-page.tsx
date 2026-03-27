@@ -29,7 +29,8 @@ export function DashboardPage() {
         <span className="font-mono text-scribix-text/80">
           scribix.com/{profile?.username}
         </span>
-        . The editor and post management are coming soon.
+        . Write in the editor, save drafts, publish when you are ready, and
+        manage everything from your dashboard.
       </p>
 
       <div className="mt-10 flex gap-3">
