@@ -1,5 +1,8 @@
+import { v4 as uuid } from "uuid";
 import { prisma } from "../config/prisma.js";
 import { AppError } from "../lib/api-error.js";
+
+const USERNAME_RE = /^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])?$/;
 
 export async function getPublicProfile(username: string) {
   const profile = await prisma.profile.findUnique({
@@ -16,6 +19,115 @@ export async function getPublicProfile(username: string) {
 
   return {
     ...formatProfile(profile),
+    links: profile.links.map(formatLink),
+  };
+}
+
+export async function checkUsernameAvailability(username: string) {
+  const normalized = username.toLowerCase().trim();
+
+  if (!USERNAME_RE.test(normalized)) {
+    return {
+      username: normalized,
+      available: false,
+      reason: "invalid" as const,
+    };
+  }
+
+  const existing = await prisma.profile.findUnique({
+    where: { username: normalized },
+    select: { id: true },
+  });
+
+  return {
+    username: normalized,
+    available: !existing,
+    reason: existing ? ("taken" as const) : null,
+  };
+}
+
+export async function upsertProfile(
+  userId: string,
+  data: {
+    username?: string;
+    display_name: string;
+    bio?: string | null;
+    avatar_media_id?: string | null;
+  },
+) {
+  const existing = await prisma.profile.findUnique({
+    where: { userId },
+    include: { avatarMedia: { select: { publicUrl: true } } },
+  });
+
+  if (existing) {
+    // Username immutable after onboarding
+    const updated = await prisma.profile.update({
+      where: { userId },
+      data: {
+        displayName: data.display_name,
+        bio: data.bio ?? existing.bio,
+        avatarMediaId: data.avatar_media_id !== undefined ? data.avatar_media_id : existing.avatarMediaId,
+      },
+      include: { avatarMedia: { select: { publicUrl: true } } },
+    });
+    return {
+      profile: formatProfile(updated),
+      onboarding: { is_complete: true },
+    };
+  }
+
+  // First-time creation (onboarding)
+  if (!data.username) {
+    throw AppError.badRequest("MISSING_USERNAME", "Username is required for onboarding");
+  }
+
+  const normalized = data.username.toLowerCase().trim();
+  if (!USERNAME_RE.test(normalized)) {
+    throw AppError.badRequest("INVALID_USERNAME", "Username must be 3-30 chars, lowercase alphanumeric and hyphens");
+  }
+
+  const taken = await prisma.profile.findUnique({
+    where: { username: normalized },
+    select: { id: true },
+  });
+  if (taken) {
+    throw AppError.conflict("USERNAME_TAKEN", "Username is already taken", { username: normalized });
+  }
+
+  const profile = await prisma.profile.create({
+    data: {
+      id: uuid(),
+      userId,
+      username: normalized,
+      displayName: data.display_name,
+      bio: data.bio ?? null,
+      avatarMediaId: data.avatar_media_id ?? null,
+    },
+    include: { avatarMedia: { select: { publicUrl: true } } },
+  });
+
+  return {
+    profile: formatProfile(profile),
+    onboarding: { is_complete: true },
+  };
+}
+
+export async function getOwnProfile(userId: string) {
+  const profile = await prisma.profile.findUnique({
+    where: { userId },
+    include: {
+      avatarMedia: { select: { publicUrl: true } },
+      links: { orderBy: { position: "asc" } },
+    },
+  });
+
+  if (!profile) {
+    throw AppError.notFound("Profile");
+  }
+
+  return {
+    profile: formatProfile(profile),
     links: profile.links.map(formatLink),
   };
 }

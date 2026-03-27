@@ -1,4 +1,5 @@
 import { ApiError } from '@/lib/api-error'
+import { supabase } from '@/lib/supabase'
 
 type ApiSuccess<T> = { data: T; error: null; message: string | null }
 type ApiErrorBody = {
@@ -18,7 +19,7 @@ export function apiUrl(path: string): string {
 
 export async function apiRequest<T>(
   path: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
   const headers = new Headers(options?.headers)
 
@@ -36,4 +37,17 @@ export async function apiRequest<T>(
   }
 
   return (json as ApiSuccess<T>).data
+}
+
+export async function authRequest<T>(
+  path: string,
+  options?: RequestInit,
+): Promise<T> {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) throw new ApiError('Not authenticated', 'UNAUTHORIZED', 401)
+
+  const headers = new Headers(options?.headers)
+  headers.set('Authorization', `Bearer ${session.access_token}`)
+
+  return apiRequest<T>(path, { ...options, headers })
 }

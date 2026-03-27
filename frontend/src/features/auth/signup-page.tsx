@@ -1,17 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { GoogleLogo } from "@/components/google-logo";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useAuth } from "@/context/auth-context";
 
 export function SignupPage() {
   usePageTitle("Sign up");
-  const [notice, setNotice] = useState<string | null>(null);
+  const { session, loading, signInWithGoogle } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleGoogle = () => {
-    setNotice(
-      "Sign-up isn’t connected yet. This page is only the layout for a future Google sign-up flow."
-    );
+  if (!loading && session) return <Navigate to="/auth/callback" replace />;
+
+  const handleGoogle = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await signInWithGoogle();
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setBusy(false);
+    }
   };
 
   return (
@@ -25,27 +35,28 @@ export function SignupPage() {
           account
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-scribix-text/65">
-          Continue with Google will live here. Next you’ll pick a public
+          Continue with Google to get started. Next you'll pick a public
           username for your profile URL.
         </p>
 
         <div className="mt-8">
-          {notice && (
+          {error && (
             <p
-              className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950"
-              role="status"
+              className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
+              role="alert"
             >
-              {notice}
+              {error}
             </p>
           )}
           <Button
             type="button"
             variant="secondary"
             className="w-full gap-3"
+            disabled={busy || loading}
             onClick={handleGoogle}
           >
             <GoogleLogo className="h-5 w-5 shrink-0" />
-            Continue with Google
+            {busy ? "Redirecting\u2026" : "Continue with Google"}
           </Button>
         </div>
 

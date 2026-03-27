@@ -16,6 +16,9 @@ export const env = {
 
   databaseUrl: required("DATABASE_URL"),
 
+  supabaseUrl: required("SUPABASE_URL"),
+  supabaseJwtSecret: required("SUPABASE_JWT_SECRET"),
+
   awsRegion: required("AWS_REGION"),
   awsAccessKeyId: required("AWS_ACCESS_KEY_ID"),
   awsSecretAccessKey: required("AWS_SECRET_ACCESS_KEY"),
