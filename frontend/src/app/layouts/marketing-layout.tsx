@@ -43,8 +43,8 @@ export function MarketingLayout() {
           <div>
             <p className="font-display text-lg text-scribix-text">Scribix</p>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-scribix-text/60">
-              Publish writing to your own Scribix URL. Post embeds for other
-              sites aren’t available yet.
+              Publish writing to your own Scribix URL and drop post embeds on
+              your portfolio or marketing site.
             </p>
           </div>
           <div>
