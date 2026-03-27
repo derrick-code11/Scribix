@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "../lib/jwt.js";
+import { verifySupabaseAccessToken } from "../lib/supabase-jwt.js";
 import { AppError } from "../lib/api-error.js";
-import { prisma } from "../config/prisma.js";
+import * as authService from "../services/auth.service.js";
 
 export interface AuthUser {
   userId: string;
@@ -29,14 +29,10 @@ export async function authenticate(
   const token = header.slice(7);
 
   try {
-    const payload = verifyAccessToken(token);
+    const payload = verifySupabaseAccessToken(token);
+    const user = await authService.ensureAppUser(payload.sub);
 
-    const user = await prisma.user.findUnique({
-      where: { id: payload.userId },
-      select: { id: true, status: true },
-    });
-
-    if (!user || user.status !== "active") {
+    if (user.status !== "active") {
       throw AppError.unauthorized("User account is not active");
     }
 
