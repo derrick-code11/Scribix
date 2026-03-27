@@ -1,27 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/use-auth";
-import { ApiError } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { GoogleLogo } from "@/components/google-logo";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export function SignupPage() {
   usePageTitle("Sign up");
-  const { loginWithGoogle } = useAuth();
-  const [formError, setFormError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
-  const handleGoogle = async () => {
-    setFormError(null);
-    try {
-      await loginWithGoogle({
-        redirectTo: `${window.location.origin}/onboarding`,
-      });
-    } catch (e) {
-      const msg =
-        e instanceof ApiError ? e.message : "Google sign-in didn’t start";
-      setFormError(msg);
-    }
+  const handleGoogle = () => {
+    setNotice(
+      "Sign-up isn’t connected yet. This page is only the layout for a future Google sign-up flow."
+    );
   };
 
   return (
@@ -35,17 +25,17 @@ export function SignupPage() {
           account
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-scribix-text/65">
-          Continue with Google. Next you’ll pick a public username for your
-          profile URL.
+          Continue with Google will live here. Next you’ll pick a public
+          username for your profile URL.
         </p>
 
         <div className="mt-8">
-          {formError && (
+          {notice && (
             <p
-              className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-              role="alert"
+              className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+              role="status"
             >
-              {formError}
+              {notice}
             </p>
           )}
           <Button
