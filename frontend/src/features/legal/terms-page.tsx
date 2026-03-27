@@ -17,8 +17,8 @@ export function TermsPage() {
       <section className="space-y-3">
         <h2 className="font-display text-lg text-scribix-text">1. Agreement</h2>
         <p>
-          By creating an account or using Scribix, you agree to these Terms. If
-          you do not agree, do not use the service.
+          By using Scribix, you agree to these Terms. If you do not agree, do
+          not use the service.
         </p>
       </section>
 
@@ -34,11 +34,9 @@ export function TermsPage() {
       <section className="space-y-3">
         <h2 className="font-display text-lg text-scribix-text">3. Accounts</h2>
         <p>
-          You must provide accurate information and protect access to your
-          Google account used to sign in. You are responsible for activity under
-          your account. Your
-          username is part of your public URL and cannot be changed after you
-          set it.
+          This preview does not offer sign-in. If we add accounts later, you
+          will be responsible for activity under your account and for keeping
+          access secure.
         </p>
       </section>
 
