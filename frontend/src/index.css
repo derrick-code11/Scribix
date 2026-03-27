@@ -1,1 +1,85 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-scribix-primary: #18280e;
+  --color-scribix-primary-fg: #ffffff;
+  --color-scribix-accent: #331b09;
+  --color-scribix-link: #331b09;
+  --color-scribix-bg: #ffffff;
+  --color-scribix-text: #090f05;
+  --color-scribix-panel: #ffffff;
+  --color-scribix-surface-muted: #f7f6f3;
+  --color-scribix-surface-tint: color-mix(in srgb, #18280e 6%, #ffffff);
+  --color-scribix-surface-wash: #f3f2ef;
+
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.dark {
+  --color-scribix-primary: #a3c090;
+  --color-scribix-primary-fg: #0f120e;
+  --color-scribix-accent: #d4c4a8;
+  --color-scribix-link: #d4c4a8;
+  --color-scribix-bg: #0f120e;
+  --color-scribix-text: #e6eae3;
+  --color-scribix-panel: #171c15;
+  --color-scribix-surface-muted: #141914;
+  --color-scribix-surface-tint: color-mix(in srgb, #a3c090 14%, #171c15);
+  --color-scribix-surface-wash: #1a211a;
+}
+
+@layer base {
+  html {
+    @apply bg-scribix-bg text-scribix-text antialiased;
+    font-family: var(--font-sans);
+  }
+  body {
+    @apply min-h-dvh text-pretty;
+  }
+  p {
+    @apply leading-[1.65];
+  }
+}
+
+@layer components {
+  .prose-editor p,
+  .prose-public p {
+    margin-bottom: 0.85em;
+  }
+  .prose-editor h1,
+  .prose-public h1 {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+  }
+  .prose-editor h2,
+  .prose-public h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-top: 1.25em;
+    margin-bottom: 0.4em;
+  }
+  .prose-editor ul,
+  .prose-public ul {
+    list-style: disc;
+    padding-left: 1.35rem;
+    margin-bottom: 0.85em;
+  }
+  .prose-editor li,
+  .prose-public li {
+    margin-bottom: 0.35em;
+  }
+
+  .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E");
+  }
+  .dark .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  }
+}
