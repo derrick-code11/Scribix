@@ -8,7 +8,7 @@ import { AppError } from "../lib/api-error.js";
 import type { AssetType } from "@prisma/client";
 
 const ALLOWED_MIME_TYPES = ["image/png", "image/jpeg"];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MIME_EXT: Record<string, string> = {
   "image/png": ".png",
   "image/jpeg": ".jpg",

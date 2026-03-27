@@ -1,15 +1,19 @@
 import rateLimit from "express-rate-limit";
 
+function rateLimitBody(message: string) {
+  return {
+    data: null,
+    error: { code: "RATE_LIMITED" },
+    message,
+  };
+}
+
 export const standardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  message: {
-    data: null,
-    error: { code: "RATE_LIMITED" },
-    message: "Too many requests, please try again later",
-  },
+  message: rateLimitBody("Too many requests, please try again later"),
 });
 
 export const authLimiter = rateLimit({
@@ -17,11 +21,7 @@ export const authLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  message: {
-    data: null,
-    error: { code: "RATE_LIMITED" },
-    message: "Too many auth attempts, please try again later",
-  },
+  message: rateLimitBody("Too many auth attempts, please try again later"),
 });
 
 export const publicLimiter = rateLimit({
@@ -29,11 +29,7 @@ export const publicLimiter = rateLimit({
   max: 60,
   standardHeaders: true,
   legacyHeaders: false,
-  message: {
-    data: null,
-    error: { code: "RATE_LIMITED" },
-    message: "Too many requests",
-  },
+  message: rateLimitBody("Too many requests"),
 });
 
 export const embedLimiter = rateLimit({
@@ -41,9 +37,5 @@ export const embedLimiter = rateLimit({
   max: 30,
   standardHeaders: true,
   legacyHeaders: false,
-  message: {
-    data: null,
-    error: { code: "RATE_LIMITED" },
-    message: "Too many embed requests",
-  },
+  message: rateLimitBody("Too many embed requests"),
 });

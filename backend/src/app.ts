@@ -13,8 +13,6 @@ app.use(express5QueryCompat);
 const allowedOrigins = env.corsOrigin.split(",").map((o) => o.trim());
 app.use(
   cors({
-    // Never pass Error to callback — that calls next(err) and becomes HTTP 500.
-    // Use (null, false) to deny CORS without throwing; browser still blocks if not listed.
     origin(origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);

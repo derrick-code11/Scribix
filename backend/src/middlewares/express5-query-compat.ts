@@ -1,10 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 
-/**
- * Express 5 exposes `req.query` as a getter on the request prototype, so
- * assigning `req.query = …` throws. Router `restore()` and some libraries still
- * write to it. Shadow with a writable own property per request (parsed once).
- */
+// Express 5: `req.query` is non-writable on the prototype; assign a plain object per request.
 export function express5QueryCompat(
   req: Request,
   _res: Response,
