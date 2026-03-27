@@ -12,7 +12,7 @@ import {
   requestUploadUrl,
   registerMedia,
   uploadFileToS3,
-} from "@/lib/auth-api";
+} from "@/api/auth";
 
 const onboardingSchema = z.object({
   username: z
@@ -223,13 +223,13 @@ export function OnboardingPage() {
             </label>
             <div className="relative mt-2">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-scribix-text/35">
-                scribix.com/
+                scribix-tau.vercel.app/
               </span>
               <input
                 id="username"
                 type="text"
                 autoComplete="off"
-                className="w-full rounded-lg border border-scribix-text/12 bg-scribix-bg px-3 py-2.5 pl-23 text-sm text-scribix-text placeholder:text-scribix-text/30 focus:border-scribix-primary/40 focus:outline-none focus:ring-2 focus:ring-scribix-primary/15"
+                className="w-full rounded-lg border border-scribix-text/12 bg-scribix-bg px-3 py-2.5 pl-56 text-sm text-scribix-text placeholder:text-scribix-text/30 focus:border-scribix-primary/40 focus:outline-none focus:ring-2 focus:ring-scribix-primary/15"
                 placeholder="your-username"
                 {...register("username")}
               />
