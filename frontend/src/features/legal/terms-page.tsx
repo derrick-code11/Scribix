@@ -34,9 +34,9 @@ export function TermsPage() {
       <section className="space-y-3">
         <h2 className="font-display text-lg text-scribix-text">3. Accounts</h2>
         <p>
-          This preview does not offer sign-in. If we add accounts later, you
-          will be responsible for activity under your account and for keeping
-          access secure.
+          You sign in with the options we provide (for example, Google). You are
+          responsible for activity under your account and for keeping access
+          secure.
         </p>
       </section>
 
