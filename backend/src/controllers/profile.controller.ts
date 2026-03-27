@@ -61,3 +61,30 @@ export async function getOwnProfileHandler(req: Request, res: Response, next: Ne
     next(err);
   }
 }
+
+const replaceLinksSchema = z.object({
+  links: z.array(
+    z.object({
+      link_type: z.enum(["portfolio", "github", "linkedin", "x", "other"]),
+      label: z.string().max(100).nullable(),
+      url: z.string().url().max(500),
+      position: z.number().int().min(0),
+    }),
+  ).max(10),
+});
+
+export async function replaceLinksHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const parsed = replaceLinksSchema.safeParse(req.body);
+    if (!parsed.success) {
+      throw AppError.badRequest("VALIDATION_ERROR", "Invalid body", {
+        issues: parsed.error.issues,
+      });
+    }
+    const userId = await resolveLocalUserId(req.auth!.sub);
+    const data = await profileService.replaceProfileLinks(userId, parsed.data.links);
+    success(res, data, "Links updated");
+  } catch (err) {
+    next(err);
+  }
+}

@@ -61,7 +61,6 @@ export async function upsertProfile(
   });
 
   if (existing) {
-    // Username immutable after onboarding
     const updated = await prisma.profile.update({
       where: { userId },
       data: {
@@ -77,7 +76,6 @@ export async function upsertProfile(
     };
   }
 
-  // First-time creation (onboarding)
   if (!data.username) {
     throw AppError.badRequest("MISSING_USERNAME", "Username is required for onboarding");
   }
@@ -146,6 +144,41 @@ function formatProfile(profile: {
     bio: profile.bio,
     avatar_url: profile.avatarMedia?.publicUrl ?? null,
   };
+}
+
+export async function replaceProfileLinks(
+  userId: string,
+  links: { link_type: string; label: string | null; url: string; position: number }[],
+) {
+  const profile = await prisma.profile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!profile) throw AppError.notFound("Profile");
+
+  await prisma.$transaction(async (tx) => {
+    await tx.profileLink.deleteMany({ where: { profileId: profile.id } });
+    if (links.length > 0) {
+      await tx.profileLink.createMany({
+        data: links.map((link) => ({
+          id: uuid(),
+          profileId: profile.id,
+          linkType: link.link_type as "portfolio" | "github" | "linkedin" | "x" | "other",
+          label: link.label,
+          url: link.url,
+          position: link.position,
+        })),
+      });
+    }
+  });
+
+  const updated = await prisma.profileLink.findMany({
+    where: { profileId: profile.id },
+    orderBy: { position: "asc" },
+  });
+
+  return updated.map(formatLink);
 }
 
 function formatLink(link: {
