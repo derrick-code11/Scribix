@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
@@ -39,7 +38,17 @@ export function SignupPage() {
   const onSubmit = async (data: Form) => {
     setFormError(null);
     try {
-      await signup(data.email, data.password);
+      const { needsEmailConfirmation } = await signup(data.email, data.password);
+      if (needsEmailConfirmation) {
+        navigate("/login", {
+          replace: true,
+          state: {
+            message:
+              "Check your email for a confirmation link, then sign in here.",
+          },
+        });
+        return;
+      }
       navigate("/onboarding", { replace: true });
     } catch (e) {
       const msg =
@@ -48,18 +57,13 @@ export function SignupPage() {
     }
   };
 
-  const handleGoogleSuccess = async (response: CredentialResponse) => {
-    if (!response.credential) {
-      setFormError("Google didn’t return a sign-in. Try again.");
-      return;
-    }
+  const handleGoogle = async () => {
     setFormError(null);
     try {
-      await loginWithGoogle(response.credential);
-      navigate("/onboarding", { replace: true });
+      await loginWithGoogle();
     } catch (e) {
       const msg =
-        e instanceof ApiError ? e.message : "Google sign-up didn’t work";
+        e instanceof ApiError ? e.message : "Google sign-in didn’t start";
       setFormError(msg);
     }
   };
@@ -78,16 +82,15 @@ export function SignupPage() {
           Next step you’ll pick a public username for your profile URL.
         </p>
 
-        <div className="mt-8 flex justify-center">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => setFormError("Google sign-in was cancelled.")}
-            theme="outline"
-            size="large"
-            width="100%"
-            text="signup_with"
-            shape="rectangular"
-          />
+        <div className="mt-8">
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full"
+            onClick={handleGoogle}
+          >
+            Continue with Google
+          </Button>
         </div>
 
         <div className="relative mt-6 mb-6">
