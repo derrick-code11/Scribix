@@ -1,3 +1,5 @@
+import type { Prisma } from "@prisma/client";
+
 export interface CursorPage<T> {
   items: T[];
   page_info: {
@@ -5,6 +7,8 @@ export interface CursorPage<T> {
     has_more: boolean;
   };
 }
+
+export type PostSortField = "publishedAt" | "createdAt" | "updatedAt";
 
 interface CursorData {
   sortValue: string;
@@ -27,6 +31,26 @@ export function decodeCursor(cursor: string): CursorData | null {
   } catch {
     return null;
   }
+}
+
+export function postCursorWhere(
+  sortField: PostSortField,
+  order: "asc" | "desc",
+  cursor: string | undefined,
+): Prisma.PostWhereInput {
+  if (!cursor) return {};
+  const decoded = decodeCursor(cursor);
+  if (!decoded) return {};
+  const op = order === "desc" ? "lt" : "gt";
+  return {
+    OR: [
+      { [sortField]: { [op]: new Date(decoded.sortValue) } },
+      {
+        [sortField]: new Date(decoded.sortValue),
+        id: { [op]: decoded.id },
+      },
+    ],
+  };
 }
 
 export function clampLimit(limit: unknown, max: number, defaultVal: number): number {
