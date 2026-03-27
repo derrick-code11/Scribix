@@ -16,9 +16,9 @@ import { authenticate } from "../middlewares/auth.js";
 
 const router = Router();
 
+// Public: onboarding checks availability before or without relying on API JWT.
 router.get(
   "/username-availability",
-  authenticate,
   validate({ query: usernameAvailabilityQuery }),
   checkUsernameHandler
 );

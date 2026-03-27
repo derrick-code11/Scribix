@@ -1,20 +1,25 @@
 import express from "express";
 import cors from "cors";
 import { env } from "./config/env.js";
+import { express5QueryCompat } from "./middlewares/express5-query-compat.js";
 import { notFoundHandler, errorHandler } from "./middlewares/error.js";
 import { standardLimiter } from "./middlewares/rate-limit.js";
 import routes from "./routes/index.js";
 
 const app = express();
 
+app.use(express5QueryCompat);
+
 const allowedOrigins = env.corsOrigin.split(",").map((o) => o.trim());
 app.use(
   cors({
+    // Never pass Error to callback — that calls next(err) and becomes HTTP 500.
+    // Use (null, false) to deny CORS without throwing; browser still blocks if not listed.
     origin(origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(null, false);
       }
     },
     credentials: true,

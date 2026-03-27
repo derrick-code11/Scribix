@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import * as profileService from "../services/profile.service.js";
+import { AppError } from "../lib/api-error.js";
 import { success } from "../lib/api-response.js";
 import type {
   UpdateProfileInput,
@@ -7,9 +8,15 @@ import type {
 } from "../validators/profile.validators.js";
 
 export async function checkUsernameHandler(req: Request, res: Response) {
-  const data = await profileService.checkUsernameAvailability(
-    req.query.username as string
-  );
+  const q = req.validatedQuery as { username?: string } | undefined;
+  const username = q?.username;
+  if (typeof username !== "string") {
+    throw AppError.badRequest(
+      "VALIDATION_ERROR",
+      "username query parameter is required"
+    );
+  }
+  const data = await profileService.checkUsernameAvailability(username);
   success(res, data);
 }
 

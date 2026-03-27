@@ -23,9 +23,7 @@ export async function registerMediaHandler(req: Request, res: Response) {
 }
 
 export async function deleteMediaHandler(req: Request, res: Response) {
-  await mediaService.softDeleteAsset(
-    req.user!.userId,
-    req.params.mediaId as string
-  );
+  const { mediaId } = req.validatedParams as { mediaId: string };
+  await mediaService.softDeleteAsset(req.user!.userId, mediaId);
   success(res, null, "Media asset deleted");
 }

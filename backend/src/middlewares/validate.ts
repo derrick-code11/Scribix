@@ -22,20 +22,20 @@ export function validate(schema: ValidationTarget) {
     }
 
     if (schema.query) {
-      const result = schema.query.safeParse(req.query);
+      const result = schema.query.safeParse(plainQuery(req));
       if (!result.success) {
         errors.query = formatZodError(result.error);
       } else {
-        (req as any).query = result.data;
+        req.validatedQuery = result.data;
       }
     }
 
     if (schema.params) {
-      const result = schema.params.safeParse(req.params);
+      const result = schema.params.safeParse(plainParams(req));
       if (!result.success) {
         errors.params = formatZodError(result.error);
       } else {
-        (req as any).params = result.data;
+        req.validatedParams = result.data;
       }
     }
 
@@ -52,4 +52,22 @@ function formatZodError(err: ZodError) {
     path: issue.path.join("."),
     message: issue.message,
   }));
+}
+
+/** Express 5 `req.query` can be a non-plain object; Zod expects plain data. */
+function plainQuery(req: Request): Record<string, unknown> {
+  const q = req.query;
+  if (!q || typeof q !== "object") return {};
+  return Object.fromEntries(
+    Object.entries(q as Record<string, unknown>).map(([k, v]) => [
+      k,
+      Array.isArray(v) ? v[0] : v,
+    ])
+  );
+}
+
+function plainParams(req: Request): Record<string, unknown> {
+  const p = req.params;
+  if (!p || typeof p !== "object") return {};
+  return { ...p };
 }
