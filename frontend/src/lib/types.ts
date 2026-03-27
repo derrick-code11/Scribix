@@ -24,11 +24,6 @@ export interface MeResponse {
   onboarding: OnboardingState
 }
 
-export interface AuthCredentialsResponse {
-  user: UserSummary
-  token: string
-}
-
 export interface ProfileLink {
   id: string
   link_type: string
