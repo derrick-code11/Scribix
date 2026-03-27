@@ -1,34 +1,20 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/use-auth";
-import { ApiError } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { GoogleLogo } from "@/components/google-logo";
-import { setOAuthReturnPath } from "@/features/auth/oauth-return-page";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export function LoginPage() {
   usePageTitle("Log in");
   const location = useLocation();
-  const { loginWithGoogle } = useAuth();
-  const [formError, setFormError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const flashMessage = (location.state as { message?: string } | null)?.message;
-  const returnTo =
-    (location.state as { from?: string } | null)?.from ?? "/dashboard";
 
-  const handleGoogle = async () => {
-    setFormError(null);
-    try {
-      setOAuthReturnPath(returnTo);
-      await loginWithGoogle({
-        redirectTo: `${window.location.origin}/auth/complete`,
-      });
-    } catch (e) {
-      const msg =
-        e instanceof ApiError ? e.message : "Google sign-in didn’t start";
-      setFormError(msg);
-    }
+  const handleGoogle = () => {
+    setNotice(
+      "Sign-in isn’t connected yet. This page is only the layout for a future Google sign-in flow."
+    );
   };
 
   return (
@@ -41,8 +27,8 @@ export function LoginPage() {
           Back to <em className="not-italic text-scribix-primary">Scribix</em>
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-scribix-text/65">
-          Sign in with your Google account. Your browser keeps a session over
-          HTTPS so you stay logged in on this device.
+          Sign in with Google will live here. For now you can browse public
+          profiles and posts.
         </p>
 
         {flashMessage && (
@@ -55,12 +41,12 @@ export function LoginPage() {
         )}
 
         <div className="mt-8">
-          {formError && (
+          {notice && (
             <p
-              className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-              role="alert"
+              className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+              role="status"
             >
-              {formError}
+              {notice}
             </p>
           )}
           <Button
