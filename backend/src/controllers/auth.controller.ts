@@ -13,6 +13,16 @@ export async function loginHandler(req: Request, res: Response) {
   success(res, result, "Login successful");
 }
 
+export async function googleLoginHandler(req: Request, res: Response) {
+  const { id_token } = req.body as { id_token: string };
+  if (!id_token || typeof id_token !== "string") {
+    res.status(400).json({ error: "id_token is required" });
+    return;
+  }
+  const result = await authService.googleLogin(id_token);
+  success(res, result, "Google login successful");
+}
+
 export async function getMeHandler(req: Request, res: Response) {
   const data = await authService.getMe(req.user!.userId);
   success(res, data, "Authenticated user loaded");
