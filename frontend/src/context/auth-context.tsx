@@ -9,8 +9,7 @@ import {
 import type { ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import { fetchAuthMe } from '@/lib/auth-api'
-import type { AuthMeResponse } from '@/lib/auth-api'
+import { fetchAuthMe, type AuthMeResponse } from '@/api/auth'
 
 interface AuthState {
   session: Session | null
