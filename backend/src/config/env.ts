@@ -16,8 +16,11 @@ export const env = {
 
   databaseUrl: required("DATABASE_URL"),
 
-  /** Project Settings → API → JWT Secret (used to verify Supabase access tokens). */
-  supabaseJwtSecret: required("SUPABASE_JWT_SECRET"),
+  /**
+   * Project URL, e.g. https://xxx.supabase.co (Dashboard → Settings → API).
+   * Used to resolve JWKS for ES256 access tokens from Supabase Auth.
+   */
+  supabaseUrl: required("SUPABASE_URL"),
 
   awsRegion: required("AWS_REGION"),
   awsAccessKeyId: required("AWS_ACCESS_KEY_ID"),

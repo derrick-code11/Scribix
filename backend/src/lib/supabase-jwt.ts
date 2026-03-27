@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 import { env } from "../config/env.js";
 
 export interface SupabaseAccessPayload {
@@ -8,15 +8,24 @@ export interface SupabaseAccessPayload {
   aud?: string | string[];
 }
 
-export function verifySupabaseAccessToken(token: string): SupabaseAccessPayload {
-  const payload = jwt.verify(token, env.supabaseJwtSecret, {
-    algorithms: ["HS256"],
-    audience: "authenticated",
-  }) as SupabaseAccessPayload;
+const issuerBase = env.supabaseUrl.replace(/\/$/, "");
+const issuer = `${issuerBase}/auth/v1`;
 
-  if (!payload.sub) {
+const JWKS = createRemoteJWKSet(
+  new URL(`${issuer}/.well-known/jwks.json`)
+);
+
+export async function verifySupabaseAccessToken(
+  token: string
+): Promise<SupabaseAccessPayload> {
+  const { payload } = await jwtVerify(token, JWKS, {
+    issuer,
+    audience: "authenticated",
+  });
+
+  if (!payload.sub || typeof payload.sub !== "string") {
     throw new Error("Invalid token: missing sub");
   }
 
-  return payload;
+  return payload as SupabaseAccessPayload;
 }

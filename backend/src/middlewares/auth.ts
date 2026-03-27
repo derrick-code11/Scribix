@@ -29,7 +29,7 @@ export async function authenticate(
   const token = header.slice(7);
 
   try {
-    const payload = verifySupabaseAccessToken(token);
+    const payload = await verifySupabaseAccessToken(token);
     const user = await authService.ensureAppUser(payload.sub);
 
     if (user.status !== "active") {
