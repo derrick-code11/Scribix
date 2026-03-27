@@ -3,13 +3,22 @@ import { prisma } from "../config/prisma.js";
 import { AppError } from "../lib/api-error.js";
 import type { AuthProvider } from "@prisma/client";
 
-/** Resolve a Supabase user ID to the local users.id. Throws 401 if not found. */
+function ensureNotDeleted(status: string) {
+  if (status === "deleted") {
+    throw AppError.forbidden("This account has been deleted");
+  }
+}
+
 export async function resolveLocalUserId(supabaseId: string): Promise<string> {
   const identity = await prisma.authIdentity.findFirst({
     where: { providerUserId: supabaseId },
-    select: { userId: true },
+    select: {
+      userId: true,
+      user: { select: { status: true } },
+    },
   });
   if (!identity) throw AppError.unauthorized("User not found. Call /auth/me first.");
+  ensureNotDeleted(identity.user.status);
   return identity.userId;
 }
 
@@ -26,6 +35,7 @@ export async function getOrCreateUser(
   });
 
   if (existing) {
+    ensureNotDeleted(existing.user.status);
     await prisma.authIdentity.update({
       where: { id: existing.id },
       data: { lastLoginAt: new Date() },
@@ -33,14 +43,13 @@ export async function getOrCreateUser(
     return existing.user;
   }
 
-  // Same provider + email but different/missing provider_user_id (e.g. partial
-  // writes or Supabase user id change). Link this identity instead of inserting.
   if (normalizedEmail) {
     const byEmail = await prisma.authIdentity.findUnique({
       where: { provider_email: { provider, email: normalizedEmail } },
       include: { user: true },
     });
     if (byEmail) {
+      ensureNotDeleted(byEmail.user.status);
       await prisma.authIdentity.update({
         where: { id: byEmail.id },
         data: {
@@ -75,6 +84,19 @@ export async function getOrCreateUser(
   return user;
 }
 
+export async function deleteAccount(userId: string) {
+  await prisma.$transaction(async (tx) => {
+    await tx.post.updateMany({
+      where: { authorUserId: userId, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+    await tx.user.update({
+      where: { id: userId },
+      data: { status: "deleted", deletedAt: new Date() },
+    });
+  });
+}
+
 export async function getAuthContext(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -87,7 +109,7 @@ export async function getAuthContext(userId: string) {
     },
   });
 
-  if (!user) return null;
+  if (!user || user.status === "deleted") return null;
 
   const profile = user.profile
     ? {
