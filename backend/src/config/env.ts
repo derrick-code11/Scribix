@@ -16,15 +16,12 @@ export const env = {
 
   databaseUrl: required("DATABASE_URL"),
 
-  jwtSecret: required("JWT_SECRET"),
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
+  /** Project Settings → API → JWT Secret (used to verify Supabase access tokens). */
+  supabaseJwtSecret: required("SUPABASE_JWT_SECRET"),
 
   awsRegion: required("AWS_REGION"),
   awsAccessKeyId: required("AWS_ACCESS_KEY_ID"),
   awsSecretAccessKey: required("AWS_SECRET_ACCESS_KEY"),
   s3Bucket: required("S3_BUCKET"),
   cloudfrontBaseUrl: required("CLOUDFRONT_BASE_URL"),
-
-  googleClientId: process.env.GOOGLE_CLIENT_ID || "",
-  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
 } as const;
