@@ -144,8 +144,8 @@ const FAQ_ITEMS: { q: string; body: ReactNode }[] = [
     q: "How do I sign in?",
     body: (
       <p>
-        Sign in with Google. Your browser keeps a session token over HTTPS so
-        you stay logged in. Logging out clears it on this device.
+        Account sign-in is not wired up in this preview. The Log in and Start
+        writing screens are placeholders for a future release.
       </p>
     ),
   },
@@ -480,9 +480,9 @@ export function LandingPage() {
               {
                 cat: "Update",
                 date: "Mar 18, 2026",
-                title: "Public profiles, posts, and Google sign-in",
+                title: "Public profiles and posts",
                 excerpt:
-                  "Each account gets a profile URL, rich-text posts with autosave, and Google sign-in.",
+                  "Browse public profiles and posts by URL. Writing and accounts are not available in this preview.",
               },
               {
                 cat: "Guide",
