@@ -1,5 +1,5 @@
 import { ApiError } from '@/lib/api-error'
-import { clearStoredToken, getStoredToken } from '@/lib/auth-storage'
+import { supabase } from '@/lib/supabase'
 
 export const UNAUTHORIZED_EVENT = 'scribix:unauthorized'
 
@@ -31,7 +31,11 @@ export async function apiRequest<T>(
     headers.set('Content-Type', 'application/json')
   }
 
-  const bearer = !skipAuth ? getStoredToken() : null
+  let bearer: string | null = null
+  if (!skipAuth) {
+    const { data: { session } } = await supabase.auth.getSession()
+    bearer = session?.access_token ?? null
+  }
   if (bearer) headers.set('Authorization', `Bearer ${bearer}`)
 
   const res = await fetch(apiUrl(path), { ...init, headers })
@@ -40,7 +44,7 @@ export async function apiRequest<T>(
   if (!res.ok || json.error) {
     const err = json as ApiErrorBody
     if (res.status === 401 && bearer) {
-      clearStoredToken()
+      await supabase.auth.signOut()
       window.dispatchEvent(new Event(UNAUTHORIZED_EVENT))
     }
     throw new ApiError(err.message ?? 'Request failed', err.error?.code, res.status)
