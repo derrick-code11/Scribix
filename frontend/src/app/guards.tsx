@@ -4,9 +4,12 @@ import { FullScreenSpinner } from '@/components/full-screen-spinner'
 import { useAuth } from '@/hooks/use-auth'
 
 export function RequireAuth() {
-  const { token, isLoading } = useAuth()
+  const { token, isLoading, isSessionReady } = useAuth()
   const location = useLocation()
 
+  if (!isSessionReady) {
+    return <FullScreenSpinner />
+  }
   if (!token) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />
   }
@@ -29,8 +32,17 @@ export function RequireOnboardingComplete() {
 }
 
 export function GuestOnly({ children }: { children: ReactNode }) {
-  const { token, isLoading, isAuthenticated, onboarding } = useAuth()
+  const {
+    token,
+    isLoading,
+    isAuthenticated,
+    onboarding,
+    isSessionReady,
+  } = useAuth()
 
+  if (!isSessionReady) {
+    return <FullScreenSpinner />
+  }
   if (token && isLoading) {
     return <FullScreenSpinner />
   }
@@ -42,4 +54,3 @@ export function GuestOnly({ children }: { children: ReactNode }) {
   }
   return <>{children}</>
 }
-
