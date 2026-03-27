@@ -135,8 +135,8 @@ const FAQ_ITEMS: { q: string; body: ReactNode }[] = [
     q: "Does it cost anything?",
     body: (
       <p>
-        There is no charge to sign up or publish right now. If that ever
-        changes, we would post clear notice before it applies to you.
+        Scribix is free to sign up and publish. If we introduce paid plans, we
+        will give clear notice before they apply to you.
       </p>
     ),
   },
@@ -144,8 +144,10 @@ const FAQ_ITEMS: { q: string; body: ReactNode }[] = [
     q: "How do I sign in?",
     body: (
       <p>
-        Account sign-in is not wired up in this preview. The Log in and Start
-        writing screens are placeholders for a future release.
+        Use <strong className="text-scribix-text/80">Log in</strong> or{" "}
+        <strong className="text-scribix-text/80">Start writing</strong> and
+        continue with Google. After that you choose a public username for your
+        profile URL.
       </p>
     ),
   },
@@ -162,9 +164,9 @@ const FAQ_ITEMS: { q: string; body: ReactNode }[] = [
     q: "Can I put posts on my own website?",
     body: (
       <p>
-        A small embed script for other sites is not available yet. For now,
-        link to your Scribix profile or individual post URLs from anywhere you
-        like.
+        Yes. Add the lightweight embed script to your portfolio or marketing
+        site to show recent posts, or link directly to your Scribix profile and
+        individual post URLs from anywhere.
       </p>
     ),
   },
@@ -173,12 +175,12 @@ const FAQ_ITEMS: { q: string; body: ReactNode }[] = [
     body: (
       <>
         <p>
-          You can remove posts from the app when delete or unpublish is
-          available on the post or dashboard.
+          Unpublish or delete posts from the post view or your dashboard
+          whenever you need to.
         </p>
         <p>
-          For account deletion, use in-app options if the product shows them, or
-          use contact information on the site when it is listed.
+          For account deletion, use the options in your account settings, or
+          reach out through the contact information on the site.
         </p>
       </>
     ),
@@ -292,8 +294,8 @@ export function LandingPage() {
                 },
                 {
                   icon: "embed" as const,
-                  title: "Embeds (maybe later)",
-                  body: "I’d like a tiny script so recent posts can show on your own site. It doesn’t exist yet. Link to your profile for now.",
+                  title: "Embeds for your site",
+                  body: "Drop in a small script and your latest posts appear on your portfolio or marketing site—same profile, surfaced where you already work.",
                 },
               ] as const
             ).map((item) => (
@@ -339,7 +341,7 @@ export function LandingPage() {
               },
               {
                 title: "Your own site",
-                body: "If a tiny embed script shows up someday, you could use it on your portfolio or marketing site. For now, link straight to your Scribix profile.",
+                body: "Paste the embed on your portfolio or marketing site so visitors see fresh writing without leaving your domain’s story.",
                 cta: "FAQ on embeds",
                 href: "#faq",
               },
@@ -428,7 +430,7 @@ export function LandingPage() {
           <motion.div {...fadeUp}>
             <SectionLabel>Flow</SectionLabel>
             <h2 className="mt-3 font-display text-3xl tracking-tight text-scribix-text sm:text-4xl">
-              Write, then publish, then (optional) embed
+              Write, publish, then embed on your site
             </h2>
             <ol className="mt-12 grid gap-8 sm:grid-cols-3">
               {[
@@ -445,7 +447,7 @@ export function LandingPage() {
                 {
                   step: "03",
                   title: "Embed",
-                  line: "If a small embed script exists someday, you’d paste it on your site. Until then, link to your profile.",
+                  line: "Add the embed snippet on your own site so recent posts show up next to your work.",
                 },
               ].map((s) => (
                 <li key={s.step} className={cardInteractive}>
@@ -471,8 +473,7 @@ export function LandingPage() {
               What changed lately
             </h2>
             <p className="mt-3 text-scribix-text/65">
-              Occasional write-ups when something worth mentioning lands, with no
-              fixed schedule.
+              Product notes and guides when we ship something worth highlighting.
             </p>
           </motion.div>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -482,7 +483,7 @@ export function LandingPage() {
                 date: "Mar 18, 2026",
                 title: "Public profiles and posts",
                 excerpt:
-                  "Browse public profiles and posts by URL. Writing and accounts are not available in this preview.",
+                  "Every writer gets a clean public profile and permalinked posts—share one link or deep-link to any piece.",
               },
               {
                 cat: "Guide",
@@ -492,11 +493,11 @@ export function LandingPage() {
                   "Pick a username, write in the editor, set a slug, publish, then share your public link.",
               },
               {
-                cat: "Idea",
+                cat: "Update",
                 date: "Jan 22, 2026",
-                title: "Embeds and custom domains",
+                title: "Embeds on your site",
                 excerpt:
-                  "Maybe a script to mirror recent posts on your own site, and custom domains down the line. Nothing promised.",
+                  "Surface recent posts on your portfolio or marketing site with the embed script—one snippet, always up to date.",
               },
             ].map((post) => (
               <Link key={post.title} to="/signup" className="group block">
@@ -556,8 +557,8 @@ export function LandingPage() {
               Give it a spin
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-scribix-text/65">
-              Free while the project is up. Pick a username, write something,
-              publish when it feels ready.
+              Free to use. Pick a username, write something, and publish when it
+              feels ready.
             </p>
             <Link to="/signup" className="mt-8 inline-block">
               <Button className="min-w-[200px]">Start writing</Button>
