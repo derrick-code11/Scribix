@@ -10,12 +10,7 @@ export type AuthContextValue = {
   onboarding: MeResponse["onboarding"] | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (
-    email: string,
-    password: string
-  ) => Promise<{ needsEmailConfirmation: boolean }>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (options?: { redirectTo?: string }) => Promise<void>;
   logout: () => Promise<void>;
   refetchSession: () => Promise<unknown>;
 };

@@ -28,15 +28,12 @@ export function PrivacyPage() {
           2. Information we collect
         </h2>
         <p>
-          <strong className="text-scribix-text">Account data:</strong> email
-          address, password hash (if you use email login), display name,
+          <strong className="text-scribix-text">Account data:</strong> sign-in is
+          with Google only. We receive identifiers and profile information from
+          Google (such as email and name) according to your Google account
+          settings and our authentication provider. We also store your chosen
           username, optional profile bio and links, and content you save in
           drafts and published posts.
-        </p>
-        <p>
-          <strong className="text-scribix-text">Sign-in with Google:</strong>{" "}
-          if you choose Google, we receive profile information from Google
-          according to your Google account settings and their policies.
         </p>
         <p>
           <strong className="text-scribix-text">Technical data:</strong>{" "}

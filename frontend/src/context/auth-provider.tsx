@@ -49,43 +49,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     retry: false,
   });
 
-  const login = useCallback(
-    async (email: string, password: string) => {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) {
-        throw new ApiError(error.message, error.code ?? undefined, 400);
-      }
-      await queryClient.invalidateQueries({ queryKey: ["me"] });
-    },
-    [queryClient]
-  );
-
-  const signup = useCallback(
-    async (email: string, password: string) => {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login`,
-        },
-      });
-      if (error) {
-        throw new ApiError(error.message, error.code ?? undefined, 400);
-      }
-      await queryClient.invalidateQueries({ queryKey: ["me"] });
-      return { needsEmailConfirmation: !data.session };
-    },
-    [queryClient]
-  );
-
-  const loginWithGoogle = useCallback(async () => {
+  const loginWithGoogle = useCallback(async (options?: { redirectTo?: string }) => {
+    const redirectTo =
+      options?.redirectTo ?? `${window.location.origin}/dashboard`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo,
       },
     });
     if (error) {
@@ -110,8 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       onboarding: data?.onboarding ?? null,
       isLoading,
       isAuthenticated: !!token && !!data,
-      login,
-      signup,
       loginWithGoogle,
       logout,
       refetchSession: () =>
@@ -122,8 +90,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionReady,
     meQuery.data,
     meQuery.isPending,
-    login,
-    signup,
     loginWithGoogle,
     logout,
     queryClient,

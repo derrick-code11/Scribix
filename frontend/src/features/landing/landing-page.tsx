@@ -144,8 +144,8 @@ const FAQ_ITEMS: { q: string; body: ReactNode }[] = [
     q: "How do I sign in?",
     body: (
       <p>
-        Use email and password, or Google. Your browser keeps a session token
-        over HTTPS so you stay logged in. Logging out clears it on this device.
+        Sign in with Google. Your browser keeps a session token over HTTPS so
+        you stay logged in. Logging out clears it on this device.
       </p>
     ),
   },
@@ -482,7 +482,7 @@ export function LandingPage() {
                 date: "Mar 18, 2026",
                 title: "Public profiles, posts, and Google sign-in",
                 excerpt:
-                  "Each account gets a profile URL, rich-text posts with autosave, and you can sign in with Google or email.",
+                  "Each account gets a profile URL, rich-text posts with autosave, and Google sign-in.",
               },
               {
                 cat: "Guide",

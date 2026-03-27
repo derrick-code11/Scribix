@@ -4,9 +4,10 @@ import { MarketingLayout } from '@/app/layouts/marketing-layout'
 import { PublicLayout } from '@/app/layouts/public-layout'
 import { GuestOnly, RequireAuth, RequireOnboardingComplete } from '@/app/guards'
 import { OnboardingGate } from '@/features/onboarding/onboarding-gate'
-import { LandingPage } from '@/features/landing/landing-page'
+import { HomePage } from '@/features/landing/home-page'
 import { LoginPage } from '@/features/auth/login-page'
 import { SignupPage } from '@/features/auth/signup-page'
+import { OAuthReturnPage } from '@/features/auth/oauth-return-page'
 import { DashboardPage } from '@/features/dashboard/dashboard-page'
 import { SettingsPage } from '@/features/settings/settings-page'
 import { EditorRoute } from '@/features/editor/editor-route'
@@ -20,7 +21,11 @@ export const router = createBrowserRouter([
     path: '/',
     element: <MarketingLayout />,
     children: [
-      { index: true, element: <LandingPage /> },
+      { index: true, element: <HomePage /> },
+      {
+        path: 'auth/complete',
+        element: <OAuthReturnPage />,
+      },
       {
         path: 'login',
         element: (
@@ -41,6 +46,7 @@ export const router = createBrowserRouter([
       { path: 'privacy', element: <PrivacyPage /> },
     ],
   },
+  // Authenticated area: session required; onboarding vs app shell split by completion.
   {
     element: <RequireAuth />,
     children: [

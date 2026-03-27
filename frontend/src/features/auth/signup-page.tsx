@@ -1,66 +1,22 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { GoogleLogo } from "@/components/google-logo";
 import { usePageTitle } from "@/hooks/use-page-title";
-
-const schema = z
-  .object({
-    email: z.string().email("Enter a valid email"),
-    password: z.string().min(8, "At least 8 characters"),
-    confirm: z.string(),
-  })
-  .refine((d) => d.password === d.confirm, {
-    message: "Passwords must match",
-    path: ["confirm"],
-  });
-
-type Form = z.infer<typeof schema>;
 
 export function SignupPage() {
   usePageTitle("Sign up");
-  const navigate = useNavigate();
-  const { signup, loginWithGoogle } = useAuth();
+  const { loginWithGoogle } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<Form>({ resolver: zodResolver(schema) });
-
-  const onSubmit = async (data: Form) => {
-    setFormError(null);
-    try {
-      const { needsEmailConfirmation } = await signup(data.email, data.password);
-      if (needsEmailConfirmation) {
-        navigate("/login", {
-          replace: true,
-          state: {
-            message:
-              "Check your email for a confirmation link, then sign in here.",
-          },
-        });
-        return;
-      }
-      navigate("/onboarding", { replace: true });
-    } catch (e) {
-      const msg =
-        e instanceof ApiError ? e.message : "That didn’t work. Try again.";
-      setFormError(msg);
-    }
-  };
 
   const handleGoogle = async () => {
     setFormError(null);
     try {
-      await loginWithGoogle();
+      await loginWithGoogle({
+        redirectTo: `${window.location.origin}/onboarding`,
+      });
     } catch (e) {
       const msg =
         e instanceof ApiError ? e.message : "Google sign-in didn’t start";
@@ -79,80 +35,29 @@ export function SignupPage() {
           account
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-scribix-text/65">
-          Next step you’ll pick a public username for your profile URL.
+          Continue with Google. Next you’ll pick a public username for your
+          profile URL.
         </p>
 
         <div className="mt-8">
-          <Button
-            type="button"
-            variant="secondary"
-            className="w-full"
-            onClick={handleGoogle}
-          >
-            Continue with Google
-          </Button>
-        </div>
-
-        <div className="relative mt-6 mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-scribix-text/10" />
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-scribix-panel px-3 font-mono text-[10px] uppercase tracking-wider text-scribix-text/40">
-              or
-            </span>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {formError && (
             <p
-              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+              className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
               role="alert"
             >
               {formError}
             </p>
           )}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-red-600">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm">Confirm password</Label>
-            <Input
-              id="confirm"
-              type="password"
-              autoComplete="new-password"
-              {...register("confirm")}
-            />
-            {errors.confirm && (
-              <p className="text-sm text-red-600">{errors.confirm.message}</p>
-            )}
-          </div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating account…" : "Create account"}
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full gap-3"
+            onClick={handleGoogle}
+          >
+            <GoogleLogo className="h-5 w-5 shrink-0" />
+            Continue with Google
           </Button>
-        </form>
+        </div>
 
         <p className="mt-8 text-center text-sm text-scribix-text/60">
           Already have an account?{" "}

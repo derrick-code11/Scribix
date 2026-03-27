@@ -1,55 +1,29 @@
 import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { GoogleLogo } from "@/components/google-logo";
+import { setOAuthReturnPath } from "@/features/auth/oauth-return-page";
 import { usePageTitle } from "@/hooks/use-page-title";
-
-const schema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type Form = z.infer<typeof schema>;
 
 export function LoginPage() {
   usePageTitle("Log in");
-  const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginWithGoogle } = useAuth();
+  const { loginWithGoogle } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
 
-  const from =
-    (location.state as { from?: string } | null)?.from ?? "/dashboard";
   const flashMessage = (location.state as { message?: string } | null)?.message;
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<Form>({ resolver: zodResolver(schema) });
-
-  const onSubmit = async (data: Form) => {
-    setFormError(null);
-    try {
-      await login(data.email, data.password);
-      navigate(from, { replace: true });
-    } catch (e) {
-      const msg =
-        e instanceof ApiError ? e.message : "That didn’t work. Try again.";
-      setFormError(msg);
-    }
-  };
+  const returnTo =
+    (location.state as { from?: string } | null)?.from ?? "/dashboard";
 
   const handleGoogle = async () => {
     setFormError(null);
     try {
-      await loginWithGoogle();
+      setOAuthReturnPath(returnTo);
+      await loginWithGoogle({
+        redirectTo: `${window.location.origin}/auth/complete`,
+      });
     } catch (e) {
       const msg =
         e instanceof ApiError ? e.message : "Google sign-in didn’t start";
@@ -67,8 +41,8 @@ export function LoginPage() {
           Back to <em className="not-italic text-scribix-primary">Scribix</em>
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-scribix-text/65">
-          Sign in with the email and password from your Supabase account, or
-          continue with Google.
+          Sign in with your Google account. Your browser keeps a session over
+          HTTPS so you stay logged in on this device.
         </p>
 
         {flashMessage && (
@@ -81,64 +55,24 @@ export function LoginPage() {
         )}
 
         <div className="mt-8">
-          <Button
-            type="button"
-            variant="secondary"
-            className="w-full"
-            onClick={handleGoogle}
-          >
-            Continue with Google
-          </Button>
-        </div>
-
-        <div className="relative mt-6 mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-scribix-text/10" />
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-scribix-panel px-3 font-mono text-[10px] uppercase tracking-wider text-scribix-text/40">
-              or
-            </span>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {formError && (
             <p
-              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+              className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
               role="alert"
             >
               {formError}
             </p>
           )}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-red-600">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
-            )}
-          </div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in…" : "Log in"}
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full gap-3"
+            onClick={handleGoogle}
+          >
+            <GoogleLogo className="h-5 w-5 shrink-0" />
+            Continue with Google
           </Button>
-        </form>
+        </div>
 
         <p className="mt-8 text-center text-sm text-scribix-text/60">
           No account?{" "}

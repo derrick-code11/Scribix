@@ -34,8 +34,9 @@ export function TermsPage() {
       <section className="space-y-3">
         <h2 className="font-display text-lg text-scribix-text">3. Accounts</h2>
         <p>
-          You must provide accurate information and keep your login credentials
-          secure. You are responsible for activity under your account. Your
+          You must provide accurate information and protect access to your
+          Google account used to sign in. You are responsible for activity under
+          your account. Your
           username is part of your public URL and cannot be changed after you
           set it.
         </p>
