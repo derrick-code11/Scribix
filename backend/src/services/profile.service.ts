@@ -5,7 +5,7 @@ import type {
   UpdateProfileInput,
   ReplaceLinksInput,
 } from "../validators/profile.validators.js";
-import type { LinkType } from "../generated/prisma/client.js";
+import type { LinkType } from "@prisma/client";
 
 export async function checkUsernameAvailability(username: string) {
   const existing = await prisma.profile.findUnique({

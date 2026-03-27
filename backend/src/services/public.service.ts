@@ -6,7 +6,7 @@ import {
   clampLimit,
   type CursorPage,
 } from "../lib/pagination.js";
-import type { Prisma } from "../generated/prisma/client.js";
+import type { Prisma } from "@prisma/client";
 
 interface PublicPostsQuery {
   limit?: string;

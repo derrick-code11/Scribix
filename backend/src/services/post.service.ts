@@ -9,7 +9,7 @@ import type {
   ListPostsInput,
   UpdatePostInput,
 } from "../validators/post.validators.js";
-import type { Prisma } from "../generated/prisma/client.js";
+import type { Prisma } from "@prisma/client";
 
 const postSelect = {
   id: true,

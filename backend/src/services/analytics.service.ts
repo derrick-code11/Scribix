@@ -1,6 +1,6 @@
 import { prisma } from "../config/prisma.js";
 import { AppError } from "../lib/api-error.js";
-import type { ViewSource } from "../generated/prisma/client.js";
+import type { ViewSource } from "@prisma/client";
 
 function rangeToDate(range: string): Date {
   const now = new Date();

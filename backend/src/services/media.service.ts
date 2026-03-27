@@ -9,7 +9,7 @@ import type {
   UploadUrlInput,
   RegisterMediaInput,
 } from "../validators/media.validators.js";
-import type { AssetType } from "../generated/prisma/client.js";
+import type { AssetType } from "@prisma/client";
 
 const MIME_TO_EXT: Record<string, string> = {
   "image/png": ".png",
