@@ -1,6 +1,10 @@
 import { useState, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -63,13 +67,16 @@ export function DashboardPage() {
     [searchParams, setSearchParams],
   );
 
-  const postsQuery = useQuery({
+  const postsQuery = useInfiniteQuery({
     queryKey: ["own-posts", statusFilter, debouncedSearch],
-    queryFn: () =>
+    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) =>
       fetchOwnPosts({
         status: statusFilter,
         q: debouncedSearch || undefined,
+        cursor: pageParam || undefined,
       }),
+    getNextPageParam: (lastPage) => lastPage.page_info.next_cursor,
   });
 
   const createMutation = useMutation({
@@ -94,11 +101,11 @@ export function DashboardPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["own-posts"] }),
   });
 
-  const posts = postsQuery.data?.items ?? [];
+  const posts = postsQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  const hasMore = postsQuery.data?.pages.at(-1)?.page_info.has_more ?? false;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-scribix-text/45">
@@ -116,7 +123,6 @@ export function DashboardPage() {
         </Button>
       </div>
 
-      {/* Filters */}
       <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-1">
           {(["all", "draft", "published"] as StatusFilter[]).map((s) => (
@@ -141,7 +147,6 @@ export function DashboardPage() {
         />
       </div>
 
-      {/* Post list */}
       <div className="mt-8">
         {postsQuery.isPending && (
           <p className="py-12 text-center text-sm text-scribix-text/50">
@@ -152,9 +157,7 @@ export function DashboardPage() {
         {postsQuery.isSuccess && posts.length === 0 && (
           <div className="rounded-2xl border border-dashed border-scribix-text/12 py-16 text-center">
             <p className="font-display text-xl text-scribix-text/70">
-              {debouncedSearch
-                ? "No posts match your search"
-                : "No posts yet"}
+              {debouncedSearch ? "No posts match your search" : "No posts yet"}
             </p>
             <p className="mt-2 text-sm text-scribix-text/50">
               {debouncedSearch
@@ -188,10 +191,14 @@ export function DashboardPage() {
           </ul>
         )}
 
-        {postsQuery.data?.page_info.has_more && (
+        {hasMore && (
           <div className="mt-6 text-center">
-            <Button variant="secondary" disabled>
-              Load more
+            <Button
+              variant="secondary"
+              onClick={() => postsQuery.fetchNextPage()}
+              disabled={postsQuery.isFetchingNextPage}
+            >
+              {postsQuery.isFetchingNextPage ? "Loading more…" : "Load more"}
             </Button>
           </div>
         )}

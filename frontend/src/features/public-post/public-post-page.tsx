@@ -98,6 +98,12 @@ export function PublicPostPage() {
           {post.title}
         </h1>
 
+        {post.excerpt && (
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-scribix-text/70 sm:text-lg">
+            {post.excerpt}
+          </p>
+        )}
+
         {post.published_at && (
           <p className="mt-5 font-mono text-xs text-scribix-text/45">
             {new Date(post.published_at).toLocaleDateString(undefined, {
@@ -138,7 +144,9 @@ export function PublicPostPage() {
             size="md"
           />
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-scribix-text">{author.display_name}</p>
+            <p className="font-medium text-scribix-text">
+              {author.display_name}
+            </p>
             <p className="mt-0.5 font-mono text-xs text-scribix-text/45">
               @{author.username}
             </p>
