@@ -8,9 +8,11 @@ function rateLimitBody(message: string) {
   };
 }
 
+const isDev = process.env.NODE_ENV !== "production";
+
 export const standardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: isDev ? 1000 : 300,
   standardHeaders: true,
   legacyHeaders: false,
   message: rateLimitBody("Too many requests, please try again later"),
