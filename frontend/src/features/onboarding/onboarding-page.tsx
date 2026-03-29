@@ -162,7 +162,6 @@ export function OnboardingPage() {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
-          {/* Avatar */}
           <div className="flex flex-col items-center gap-3">
             <button
               type="button"
@@ -213,7 +212,6 @@ export function OnboardingPage() {
             </p>
           </div>
 
-          {/* Username */}
           <div>
             <label
               htmlFor="username"
@@ -265,7 +263,6 @@ export function OnboardingPage() {
             )}
           </div>
 
-          {/* Display Name */}
           <div>
             <label
               htmlFor="display_name"
@@ -287,7 +284,6 @@ export function OnboardingPage() {
             )}
           </div>
 
-          {/* Bio */}
           <div>
             <label
               htmlFor="bio"

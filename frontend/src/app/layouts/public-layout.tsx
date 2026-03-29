@@ -33,7 +33,6 @@ export function PublicLayout() {
         </div>
       </header>
 
-      {/* Reserve space for fixed header so content doesn’t jump when bar hides */}
       <main className="pb-16 pt-21 sm:pt-23">
         <Outlet />
       </main>

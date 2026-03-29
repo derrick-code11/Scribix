@@ -3,7 +3,6 @@ type GoogleLogoProps = {
   "aria-hidden"?: boolean;
 };
 
-/** Official multicolor Google “G” mark (brand colors). */
 export function GoogleLogo({ className, "aria-hidden": ariaHidden = true }: GoogleLogoProps) {
   return (
     <svg

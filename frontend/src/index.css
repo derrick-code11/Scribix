@@ -13,7 +13,6 @@
   --color-scribix-surface-muted: #f3f1ec;
   --color-scribix-surface-tint: color-mix(in srgb, #18280e 6%, #ffffff);
   --color-scribix-surface-wash: #ebe8e1;
-  /* Light UI: visible structure */
   --color-scribix-border: #d9d4ca;
   --color-scribix-border-strong: #c4bdb0;
   --color-scribix-text-muted: color-mix(in srgb, #090f05 48%, #ffffff);
@@ -136,7 +135,6 @@
   .prose-public figure {
     margin: 1.25em 0;
   }
-  /* Inline post images (body only — covers live outside these wrappers) */
   .prose-editor img,
   .prose-public img {
     display: block;
@@ -148,7 +146,6 @@
     border-radius: 0.375rem;
     border: 1px solid var(--color-scribix-border);
   }
-  /* Inline code only — don’t style pre>code like inline or hljs token colors break */
   .prose-editor :not(pre) > code,
   .prose-public :not(pre) > code {
     font-family: var(--font-mono);

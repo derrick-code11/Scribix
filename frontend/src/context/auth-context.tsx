@@ -93,9 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profile: me.profile,
         onboarding: me.onboarding,
       }))
-    } catch {
-      // silent
-    }
+    } catch {}
   }, [state.session])
 
   const value = useMemo<AuthContextValue>(
