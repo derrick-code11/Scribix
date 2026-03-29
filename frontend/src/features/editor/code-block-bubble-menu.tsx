@@ -3,7 +3,6 @@ import { BubbleMenu } from "@tiptap/react/menus";
 import { useEditorState } from "@tiptap/react";
 import { CODE_BLOCK_LANGUAGE_OPTIONS } from "@/lib/code-block-languages";
 
-/** Anchor to the whole code block `<pre>`, not the caret (avoids straddling the top border). */
 function getCodeBlockDom(editor: Editor): HTMLElement | null {
   const { view } = editor;
   const { $from } = view.state.selection;

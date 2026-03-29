@@ -67,7 +67,6 @@ export function TagInput({
     [input, tags, addTag, removeTag],
   );
 
-  // Close suggestions on outside click
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handler = (e: MouseEvent) => {

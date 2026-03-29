@@ -6,7 +6,6 @@ export function EditorToolbar({
   onUploadImageFile,
 }: {
   editor: Editor;
-  /** Upload to storage and return public URL for `setImage`. */
   onUploadImageFile?: (file: File) => Promise<string>;
 }) {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -170,7 +169,7 @@ export function EditorToolbar({
                 const url = await onUploadImageFile(file);
                 editor.chain().focus().setImage({ src: url }).run();
               } catch {
-                /* toast optional */
+                return;
               }
             }}
           />

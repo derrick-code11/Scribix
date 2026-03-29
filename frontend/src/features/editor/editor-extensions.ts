@@ -9,10 +9,9 @@ import TaskItem from "@tiptap/extension-task-item";
 import Image from "@tiptap/extension-image";
 import Highlight from "@tiptap/extension-highlight";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
-import type { AnyExtension, Extensions } from "@tiptap/core";
+import { Extension, type AnyExtension, type Extensions } from "@tiptap/core";
 import { lowlight } from "@/lib/lowlight";
 
-/** Enter exits heading into a normal paragraph (reliable split; keeps Mod-Alt-1… shortcuts). */
 const HeadingWithEnter = Heading.extend({
   priority: 1000,
   addKeyboardShortcuts() {
@@ -31,6 +30,39 @@ const imageAttrs = {
   class:
     "h-auto rounded-lg border border-scribix-border my-4 mx-auto block max-w-full",
 };
+
+const EditorKeyboardSupport = Extension.create({
+  name: "editorKeyboardSupport",
+  addKeyboardShortcuts() {
+    return {
+      Tab: () => {
+        if (this.editor.isActive("codeBlock")) return false;
+
+        if (this.editor.isActive("taskItem")) {
+          return this.editor.commands.sinkListItem("taskItem") || true;
+        }
+        if (this.editor.isActive("listItem")) {
+          return this.editor.commands.sinkListItem("listItem") || true;
+        }
+
+        this.editor.commands.insertContent("  ");
+        return true;
+      },
+      "Shift-Tab": () => {
+        if (this.editor.isActive("codeBlock")) return false;
+
+        if (this.editor.isActive("taskItem")) {
+          return this.editor.commands.liftListItem("taskItem") || true;
+        }
+        if (this.editor.isActive("listItem")) {
+          return this.editor.commands.liftListItem("listItem") || true;
+        }
+
+        return true;
+      },
+    };
+  },
+});
 
 const baseExtensions: Extensions = [
   StarterKit.configure({
@@ -67,9 +99,9 @@ const baseExtensions: Extensions = [
     multicolor: false,
     HTMLAttributes: { class: "scribix-highlight" },
   }),
+  EditorKeyboardSupport,
 ];
 
-/** Same schema as the editor, without Placeholder — for `generateHTML` preview. */
 export function getHtmlExtensions(): AnyExtension[] {
   return baseExtensions as AnyExtension[];
 }
