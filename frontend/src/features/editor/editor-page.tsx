@@ -5,6 +5,14 @@ import { EditorEditPane } from "./editor-edit-pane";
 import { EditorPreviewPane } from "./editor-preview-pane";
 import { useEditorPostState } from "./use-editor-post-state";
 
+function PostDetailsHeader() {
+  return (
+    <h2 className="font-mono text-[10px] uppercase tracking-[0.25em] text-scribix-text-muted">
+      Post details
+    </h2>
+  );
+}
+
 export function EditorPage() {
   const {
     postQuery,
@@ -64,6 +72,7 @@ export function EditorPage() {
         onUnpublish={() => unpublishMutation.mutate()}
         publishPending={publishMutation.isPending}
         unpublishPending={unpublishMutation.isPending}
+        embedSettingsUrl="/settings?tab=embed&source=editor"
       />
 
       <div className="flex min-h-0 flex-1">
@@ -90,9 +99,7 @@ export function EditorPage() {
 
         <aside className="hidden w-[min(100%,22rem)] shrink-0 overflow-y-auto border-l border-scribix-border bg-scribix-surface-muted lg:block xl:w-96">
           <div className="sticky top-0 border-b border-scribix-border bg-scribix-surface-muted/95 px-4 py-3 backdrop-blur-md">
-            <h2 className="font-mono text-[10px] uppercase tracking-[0.25em] text-scribix-text-muted">
-              Post details
-            </h2>
+            <PostDetailsHeader />
           </div>
           <div className="p-4 sm:p-5">
             {detailsProps && <PostDetailsFields {...detailsProps} />}
@@ -110,9 +117,7 @@ export function EditorPage() {
           />
           <aside className="fixed inset-y-0 right-0 z-50 flex w-[min(100%,22rem)] flex-col border-l border-scribix-border bg-scribix-panel shadow-xl lg:hidden">
             <div className="flex items-center justify-between border-b border-scribix-border px-4 py-3">
-              <h2 className="font-mono text-[10px] uppercase tracking-[0.25em] text-scribix-text-muted">
-                Post details
-              </h2>
+              <PostDetailsHeader />
               <button
                 type="button"
                 onClick={() => setMobileDetailsOpen(false)}

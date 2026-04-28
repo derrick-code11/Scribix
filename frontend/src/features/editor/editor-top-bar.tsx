@@ -14,6 +14,7 @@ type EditorTopBarProps = {
   onUnpublish: () => void;
   publishPending: boolean;
   unpublishPending: boolean;
+  embedSettingsUrl: string;
 };
 
 export function EditorTopBar({
@@ -27,6 +28,7 @@ export function EditorTopBar({
   onUnpublish,
   publishPending,
   unpublishPending,
+  embedSettingsUrl,
 }: EditorTopBarProps) {
   return (
     <div className="sticky top-0 z-20 border-b border-scribix-border bg-scribix-panel/95 backdrop-blur-xl">
@@ -65,6 +67,14 @@ export function EditorTopBar({
                   strokeLinejoin="round"
                 />
               </svg>
+            </a>
+          )}
+          {postStatus === "published" && (
+            <a
+              href={embedSettingsUrl}
+              className="hidden items-center gap-1.5 rounded-full border border-scribix-border bg-scribix-surface-muted px-2.5 py-1 font-mono text-[11px] text-scribix-text-muted transition-colors hover:border-scribix-border-strong hover:text-scribix-text sm:inline-flex"
+            >
+              Get Embed
             </a>
           )}
         </div>

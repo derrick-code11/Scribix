@@ -21,6 +21,17 @@ import type { PostDetailsFieldsProps } from "./post-details-fields";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 type EditorView = "edit" | "preview";
+const IMAGE_UPLOAD_ALLOWED_TYPES = ["image/png", "image/jpeg"];
+const IMAGE_UPLOAD_MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+
+function assertValidImageUpload(file: File, invalidTypeMessage: string) {
+  if (!IMAGE_UPLOAD_ALLOWED_TYPES.includes(file.type)) {
+    throw new Error(invalidTypeMessage);
+  }
+  if (file.size > IMAGE_UPLOAD_MAX_FILE_SIZE_BYTES) {
+    throw new Error("Image must be 5 MB or smaller.");
+  }
+}
 
 type LocalEditorDraft = {
   postId: string;
@@ -64,6 +75,11 @@ export function useEditorPostState() {
 
   const post = postQuery.data;
   usePageTitle(post?.title || "Editor");
+
+  const invalidatePostQueries = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["own-post", postId] });
+    queryClient.invalidateQueries({ queryKey: ["own-posts"] });
+  }, [queryClient, postId]);
 
   const editorExtensions = useMemo(() => createEditorExtensions(), []);
   const editor = useEditor({
@@ -170,12 +186,7 @@ export function useEditorPostState() {
   const coverUploadMutation = useMutation({
     mutationFn: async (file: File) => {
       if (!postId) throw new Error("Missing post");
-      if (!["image/png", "image/jpeg"].includes(file.type)) {
-        throw new Error("Use PNG or JPEG.");
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error("Image must be 5 MB or smaller.");
-      }
+      assertValidImageUpload(file, "Use PNG or JPEG.");
       const { upload_url, storage_key } = await requestUploadUrl({
         file_name: file.name,
         mime_type: file.type,
@@ -191,27 +202,16 @@ export function useEditorPostState() {
       });
       await updatePost(postId, { cover_media_id: media.id });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["own-post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["own-posts"] });
-    },
+    onSuccess: invalidatePostQueries,
   });
 
   const removeCoverMutation = useMutation({
     mutationFn: () => updatePost(postId!, { cover_media_id: null }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["own-post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["own-posts"] });
-    },
+    onSuccess: invalidatePostQueries,
   });
 
   const uploadInlineImage = useCallback(async (file: File) => {
-    if (!["image/png", "image/jpeg"].includes(file.type)) {
-      throw new Error("Only PNG or JPEG images are allowed.");
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      throw new Error("Image must be 5 MB or smaller.");
-    }
+    assertValidImageUpload(file, "Only PNG or JPEG images are allowed.");
     const { upload_url, storage_key } = await requestUploadUrl({
       file_name: file.name,
       mime_type: file.type,
@@ -314,18 +314,12 @@ export function useEditorPostState() {
       await doSaveNow();
       return publishPost(postId!);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["own-post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["own-posts"] });
-    },
+    onSuccess: invalidatePostQueries,
   });
 
   const unpublishMutation = useMutation({
     mutationFn: () => unpublishPost(postId!),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["own-post", postId] });
-      queryClient.invalidateQueries({ queryKey: ["own-posts"] });
-    },
+    onSuccess: invalidatePostQueries,
   });
 
   const liveUrl =

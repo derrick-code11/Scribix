@@ -9,6 +9,7 @@ export function EditorToolbar({
   onUploadImageFile?: (file: File) => Promise<string>;
 }) {
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const canUploadImage = Boolean(onUploadImageFile);
 
   return (
     <div className="flex flex-wrap items-center gap-0.5">
@@ -154,7 +155,7 @@ export function EditorToolbar({
       >
         Img
       </ToolbarButton>
-      {onUploadImageFile && (
+      {canUploadImage && (
         <>
           <input
             ref={imageInputRef}
@@ -169,7 +170,7 @@ export function EditorToolbar({
                 const url = await onUploadImageFile(file);
                 editor.chain().focus().setImage({ src: url }).run();
               } catch {
-                return;
+                // Keep editor usable if upload fails.
               }
             }}
           />

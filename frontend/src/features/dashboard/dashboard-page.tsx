@@ -115,12 +115,20 @@ export function DashboardPage() {
             Your Posts
           </h1>
         </div>
-        <Button
-          onClick={() => createMutation.mutate()}
-          disabled={createMutation.isPending}
-        >
-          {createMutation.isPending ? "Creating…" : "New Post"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/settings?tab=embed"
+            className="inline-flex items-center justify-center rounded-sm border border-scribix-border bg-scribix-panel px-4 py-2 font-mono text-xs text-scribix-text transition-colors hover:border-scribix-border-strong hover:bg-scribix-border-subtle"
+          >
+            Embed on your site
+          </Link>
+          <Button
+            onClick={() => createMutation.mutate()}
+            disabled={createMutation.isPending}
+          >
+            {createMutation.isPending ? "Creating…" : "New Post"}
+          </Button>
+        </div>
       </div>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
