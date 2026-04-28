@@ -156,7 +156,26 @@ export async function getPublicPostDetail(username: string, slug: string) {
   };
 }
 
-export async function getEmbedFeed(username: string, limitParam?: string) {
+interface EmbedFeedQuery {
+  limit?: string;
+  offset?: string;
+}
+
+interface EmbedFeedOptions {
+  siteOrigin?: string;
+}
+
+function clampOffset(offset: unknown, max: number): number {
+  const n = typeof offset === "string" ? parseInt(offset, 10) : Number(offset);
+  if (isNaN(n) || n < 0) return 0;
+  return Math.min(n, max);
+}
+
+export async function getEmbedFeed(
+  username: string,
+  query: EmbedFeedQuery,
+  options: EmbedFeedOptions = {}
+) {
   const profile = await prisma.profile.findUnique({
     where: { username: username.toLowerCase() },
     select: { userId: true, username: true },
@@ -164,7 +183,8 @@ export async function getEmbedFeed(username: string, limitParam?: string) {
 
   if (!profile) throw AppError.notFound("Profile");
 
-  const limit = clampLimit(limitParam, 10, 3);
+  const limit = clampLimit(query.limit, 20, 6);
+  const offset = clampOffset(query.offset, 200);
 
   const posts = await prisma.post.findMany({
     where: {
@@ -173,7 +193,8 @@ export async function getEmbedFeed(username: string, limitParam?: string) {
       deletedAt: null,
     },
     orderBy: { publishedAt: "desc" },
-    take: limit,
+    skip: offset,
+    take: limit + 1,
     select: {
       title: true,
       slug: true,
@@ -182,13 +203,28 @@ export async function getEmbedFeed(username: string, limitParam?: string) {
     },
   });
 
+  const hasMore = posts.length > limit;
+  const items = hasMore ? posts.slice(0, limit) : posts;
+  const siteOrigin = options.siteOrigin?.replace(/\/$/, "") ?? null;
+
   return {
     username: profile.username,
-    items: posts.map((p) => ({
+    items: items.map((p) => ({
       title: p.title,
+      slug: p.slug,
       url: `/${profile.username}/${p.slug}`,
+      absolute_url: siteOrigin
+        ? `${siteOrigin}/${profile.username}/${p.slug}`
+        : null,
       excerpt: p.excerpt,
       published_at: p.publishedAt,
     })),
+    page_info: {
+      limit,
+      offset,
+      returned: items.length,
+      has_more: hasMore,
+      next_offset: hasMore ? offset + items.length : null,
+    },
   };
 }

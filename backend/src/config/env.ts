@@ -13,6 +13,7 @@ export const env = {
   port: parseInt(process.env.PORT || "4000", 10),
   nodeEnv: process.env.NODE_ENV || "development",
   corsOrigin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  publicAppUrl: process.env.PUBLIC_APP_URL || "http://localhost:5173",
 
   databaseUrl: required("DATABASE_URL"),
 
