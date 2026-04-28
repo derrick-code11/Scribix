@@ -18,7 +18,6 @@ export function PublicPostPage() {
   });
 
   const data = postQuery.data;
-
   let html = "";
   if (data?.post.content_json) {
     try {

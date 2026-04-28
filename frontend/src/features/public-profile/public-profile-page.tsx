@@ -93,6 +93,8 @@ export function PublicProfilePage() {
 
   const posts = postsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const hasMore = postsQuery.data?.pages.at(-1)?.page_info.has_more ?? false;
+  const hasPostsData = Boolean(postsQuery.data);
+  const hasPosts = posts.length > 0;
 
   return (
     <div className="mx-auto max-w-5xl px-4 pb-20 sm:px-6">
@@ -161,7 +163,7 @@ export function PublicProfilePage() {
           <p className="mt-10 text-sm text-scribix-text/50">Loading posts…</p>
         )}
 
-        {postsQuery.data && posts.length === 0 && (
+        {hasPostsData && !hasPosts && (
           <div className="mt-12 rounded-2xl border border-dashed border-scribix-border bg-scribix-surface-muted/40 px-6 py-14 text-center">
             <p className="font-display text-lg text-scribix-text/70">
               Nothing published yet
@@ -172,7 +174,7 @@ export function PublicProfilePage() {
           </div>
         )}
 
-        {postsQuery.data && posts.length > 0 && (
+        {hasPostsData && hasPosts && (
           <ul className="mt-10 grid gap-6 sm:grid-cols-2 sm:gap-7">
             {posts.map((p) => (
               <li key={p.id}>

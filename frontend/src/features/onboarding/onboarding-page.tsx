@@ -14,6 +14,51 @@ import {
   uploadFileToS3,
 } from "@/api/auth";
 
+const AVATAR_ALLOWED_TYPES = ["image/png", "image/jpeg"];
+const AVATAR_MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+
+type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
+
+function getUsernameStatus(
+  result: Awaited<ReturnType<typeof checkUsernameAvailability>>,
+): UsernameStatus {
+  if (result.available) return "available";
+  if (result.reason === "invalid") return "invalid";
+  return "taken";
+}
+
+function UsernameStatusIndicator({ status }: { status: UsernameStatus }) {
+  if (status === "checking") {
+    return (
+      <span className="absolute right-3 top-1/2 -translate-y-1/2">
+        <div className="h-4 w-4 animate-spin rounded-full border-2 border-scribix-text/20 border-t-scribix-primary" />
+      </span>
+    );
+  }
+
+  if (status === "available") {
+    return (
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600">
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg>
+      </span>
+    );
+  }
+
+  if (status === "taken") {
+    return (
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </span>
+    );
+  }
+
+  return null;
+}
+
 const onboardingSchema = z.object({
   username: z
     .string()
@@ -39,9 +84,7 @@ export function OnboardingPage() {
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarMediaId, setAvatarMediaId] = useState<string | null>(null);
 
-  const [usernameStatus, setUsernameStatus] = useState<
-    "idle" | "checking" | "available" | "taken" | "invalid"
-  >("idle");
+  const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const {
@@ -68,7 +111,7 @@ export function OnboardingPage() {
     debounceRef.current = setTimeout(async () => {
       try {
         const result = await checkUsernameAvailability(val);
-        setUsernameStatus(result.available ? "available" : (result.reason === "invalid" ? "invalid" : "taken"));
+        setUsernameStatus(getUsernameStatus(result));
       } catch {
         setUsernameStatus("idle");
       }
@@ -83,10 +126,10 @@ export function OnboardingPage() {
       const file = e.target.files?.[0];
       if (!file) return;
 
-      if (!["image/png", "image/jpeg"].includes(file.type)) {
+      if (!AVATAR_ALLOWED_TYPES.includes(file.type)) {
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > AVATAR_MAX_FILE_SIZE_BYTES) {
         return;
       }
 
@@ -231,25 +274,7 @@ export function OnboardingPage() {
                 placeholder="your-username"
                 {...register("username")}
               />
-              {usernameStatus === "checking" && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-scribix-text/20 border-t-scribix-primary" />
-                </span>
-              )}
-              {usernameStatus === "available" && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600">
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
-                </span>
-              )}
-              {usernameStatus === "taken" && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </span>
-              )}
+              <UsernameStatusIndicator status={usernameStatus} />
             </div>
             {errors.username && (
               <p className="mt-1.5 text-xs text-red-600">

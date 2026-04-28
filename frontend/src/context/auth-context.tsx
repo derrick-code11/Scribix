@@ -93,7 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profile: me.profile,
         onboarding: me.onboarding,
       }))
-    } catch {}
+    } catch {
+      // Keep existing state when profile refresh fails.
+    }
   }, [state.session])
 
   const value = useMemo<AuthContextValue>(
@@ -104,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth must be used within AuthProvider')

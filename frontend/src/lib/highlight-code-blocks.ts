@@ -6,6 +6,8 @@ export function highlightCodeBlocks(root: HTMLElement | null) {
     if (!(node instanceof HTMLElement)) return;
     try {
       hljs.highlightElement(node);
-    } catch {}
+    } catch {
+      // Skip malformed code blocks and continue highlighting others.
+    }
   });
 }
