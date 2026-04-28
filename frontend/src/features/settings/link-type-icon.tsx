@@ -54,20 +54,13 @@ function GenericLinkIcon({ className }: { className?: string }) {
   );
 }
 
-const LINK_META: Record<
-  string,
-  { label: string; Icon: typeof PortfolioIcon }
-> = {
-  portfolio: { label: "Portfolio", Icon: PortfolioIcon },
-  github: { label: "GitHub", Icon: GitHubIcon },
-  linkedin: { label: "LinkedIn", Icon: LinkedInIcon },
-  x: { label: "X", Icon: XIcon },
-  other: { label: "Other", Icon: GenericLinkIcon },
+const LINK_ICON_BY_TYPE: Record<string, typeof PortfolioIcon> = {
+  portfolio: PortfolioIcon,
+  github: GitHubIcon,
+  linkedin: LinkedInIcon,
+  x: XIcon,
+  other: GenericLinkIcon,
 };
-
-export function getLinkTypeMeta(linkType: string) {
-  return LINK_META[linkType] ?? LINK_META.other;
-}
 
 export function LinkTypeIcon({
   linkType,
@@ -76,8 +69,6 @@ export function LinkTypeIcon({
   linkType: string;
   className?: string;
 }) {
-  const { Icon } = getLinkTypeMeta(linkType);
+  const Icon = LINK_ICON_BY_TYPE[linkType] ?? LINK_ICON_BY_TYPE.other;
   return <Icon className={className} />;
 }
-
-export const LINK_TYPES = ["portfolio", "github", "linkedin", "x", "other"] as const;

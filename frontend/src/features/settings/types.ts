@@ -10,3 +10,22 @@ export interface OwnProfileResponse {
   };
   links: ProfileLink[];
 }
+
+export interface EmbedFeedPreview {
+  username: string;
+  items: {
+    title: string;
+    slug: string;
+    url: string;
+    absolute_url: string | null;
+    excerpt: string | null;
+    published_at: string | null;
+  }[];
+  page_info: {
+    limit: number;
+    offset: number;
+    returned: number;
+    has_more: boolean;
+    next_offset: number | null;
+  };
+}
